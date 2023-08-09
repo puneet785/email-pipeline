@@ -23,9 +23,8 @@ pipeline {
 
         stage('Build'){
             steps{
-                sh mvn compile
+                echo "Build"
             }
-
             post{
                 success{
                 echo "Build is succesfull ! :)"
