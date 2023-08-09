@@ -48,7 +48,7 @@ pipeline {
         stage("Email"){
             steps{
                 echo 'Sending email notification ...'
-                mail to: 'npz2kor@bosch.com',
+                mail to: 'vighneshkartik26@gmail.com',
                 subject: "Pipeline build is successfull",
                 body: "Test email notification for pipeline"
 
