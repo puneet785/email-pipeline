@@ -23,7 +23,7 @@ pipeline {
 
         stage('Build'){
             steps{
-                echo "Build"
+                mvn clean package
             }
             post{
                 success{
