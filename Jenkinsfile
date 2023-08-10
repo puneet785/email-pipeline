@@ -1,32 +1,66 @@
+
+
 pipeline {
     agent any
 
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "M3"
+    }
+
     stages {
-        stage('Preparation') {
+        stage('Prepare') {
             steps {
                 // Get some code from a GitHub repository
                 git branch: 'main',
-                url : 'https://github.com/jglick/simple-maven-project-with-tests.git'
+                    url: 'https://gitlab.com/VittalAB/pipelines-java2.git'
             }
 
+            post {
+                success {
+                    echo "Preparation is successfull ! :)"
+                }
+            }
         }
+
         stage('Build'){
             steps{
-                echo "Build stage"
+               sh "mvn clean package"
+            }
+            post{
+                success{
+                echo "Build is succesfull ! :)"
+                }
             }
         }
+
         stage('Test'){
-            steps{
-                echo "Test stage"
+            steps{                
+                    sh "mvn -Dmaven.test.failure.ignore=true clean package"
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.war'
+            }
+            post{
+                success{
+                echo "Test is done" 
+                }
             }
         }
-        stage('Deploy'){
+
+        stage("Email"){
             steps{
-                echo "Deploy stage"
+                echo 'Sending email notification ...'
+                mail to: '',
+                subject: "Pipeline build is successfull",
+                body: "Test email notification for pipeline"
+
+            }
+            post{
+                success{
+                    echo "Email sent !!"
+                }
             }
         }
+
     }
 }
-
-
-
