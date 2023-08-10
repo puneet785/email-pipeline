@@ -1,64 +1,46 @@
 pipeline {
     agent any
 
-    tools {
-        // Install the Maven version configured as "M3" and add it to the path.
-        maven "M3"
-    }
-
     stages {
-        stage('Prepare') {
+        stage('Preparation') {
             steps {
                 // Get some code from a GitHub repository
                 git branch: 'main',
-                    url: 'https://gitlab.com/VittalAB/pipelines-java2.git'
+                url : 'https://github.com/jglick/simple-maven-project-with-tests.git'
+
+                // Run Maven on a Unix agent.
+                sh "mvn -Dmaven.test.failure.ignore=true clean package"
+
+                // To run Maven on a Windows agent, use
+                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
             }
 
             post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
                 success {
-                    echo "Preparation is successfull ! :)"
-                }
-            }
-        }
-
-        stage('Build'){
-            steps{
-               sh "mvn clean package"
-            }
-            post{
-                success{
-                echo "Build is succesfull ! :)"
-                }
-            }
-        }
-
-        stage('Test'){
-            steps{                
-                    sh "mvn -Dmaven.test.failure.ignore=true clean package"
                     junit '**/target/surefire-reports/TEST-*.xml'
                     archiveArtifacts 'target/*.war'
-            }
-            post{
-                success{
-                echo "Test is done" 
                 }
             }
         }
-
-        stage("Email"){
+        stage('Build'){
             steps{
-                echo 'Sending email notification ...'
-                mail to: '',
-                subject: "Pipeline build is successfull",
-                body: "Test email notification for pipeline"
-
-            }
-            post{
-                success{
-                    echo "Email sent !!"
-                }
+                echo "Build stage"
             }
         }
-
+        stage('Test'){
+            steps{
+                echo "Test stage"
+            }
+        }
+        stage('Deploy'){
+            steps{
+                echo "Deploy stage"
+            }
+        }
     }
 }
+
+
+
