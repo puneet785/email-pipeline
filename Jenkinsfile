@@ -1,5 +1,5 @@
 pipeline { 
-   agent osd_machine
+   agent any
 
    stages{ 
         stage('Checkout'){
