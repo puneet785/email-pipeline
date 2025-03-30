@@ -1,66 +1,23 @@
+pipeline { 
+   agent osd_machine
 
-
-pipeline {
-    agent any
-
-    tools {
-        // Install the Maven version configured as "M3" and add it to the path.
-        maven "M3"
-    }
-
-    stages {
-        stage('Prepare') {
-            steps {
-                // Get some code from a GitHub repository
-                git branch: 'main',
-                    url: 'https://gitlab.com/VittalAB/pipelines-java2.git'
-            }
-
-            post {
-                success {
-                    echo "Preparation is successfull ! :)"
-                }
-            }
-        }
-
-        stage('Build'){
+   stages{ 
+        stage('Checkout'){
             steps{
-               sh "mvn clean package"
-            }
-            post{
-                success{
-                echo "Build is succesfull ! :)"
-                }
+                checkout scm
             }
         }
-
-        stage('Test'){
-            steps{                
-                    sh "mvn -Dmaven.test.failure.ignore=true clean package"
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'target/*.war'
+       stage('Run python'){
+           steps{
+            script{
+               def command= "python3 ${env.workspace}/agile.py"
+               def process = command.execute()
+               process.waitFor()
             }
-            post{
-                success{
-                echo "Test is done" 
-                }
-            }
-        }
+           }
+       }
+   
+   }
 
-        stage("Email"){
-            steps{
-                echo 'Sending email notification ...'
-                mail to: '',
-                subject: "Pipeline build is successfull",
-                body: "Test email notification for pipeline"
 
-            }
-            post{
-                success{
-                    echo "Email sent !!"
-                }
-            }
-        }
-
-    }
 }
