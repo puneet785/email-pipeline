@@ -19,7 +19,7 @@ timeout = timedelta(minutes=5)
 # message = "Seat not booked, please act fast"
 driver.execute_script("window.open('about:blank', '_blank');")
 driver.switch_to.window(driver.window_handles[1])
-driver.get("https://izc1kor:@stfs.bosch.com/adfs/ls/wia")
+driver.get("https://npz2kor:@stfs.bosch.com/adfs/ls/wia")
 driver.switch_to.window(driver.window_handles[0])
  
 print("Booking started at", start_time.strftime("%H:%M:%S"))
@@ -36,7 +36,7 @@ while True:
         )
         cell.click()
         time.sleep(7)
-        rect = driver.find_element(By.ID, "Location143-214")
+        rect = driver.find_element(By.ID, "Location143-218")
         rect.click()
         print("Element clicked!")
         button = driver.find_element(By.XPATH, "//button[contains(@class, 'btn btn-primary')]")
